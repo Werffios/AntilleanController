@@ -10,7 +10,7 @@ logging.basicConfig(
 )
 
 app = FastAPI(
-    title="Demo - Networking AXD SAS",
+    title="Backend Controller API - Antillean",
     description=(
         "controller app"
     ),
