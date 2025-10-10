@@ -22,10 +22,6 @@ EXPOSE 5000
 # Ejecutar la aplicación
 CMD ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "5000"]
 
-# Añadir un healthcheck para verificar que la aplicación está funcionando
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-  CMD curl --fail http://127.0.0.1:5000/health || exit 1
-
 
 #docker run --name some-mysql \
 #  -e MYSQL_ROOT_PASSWORD=my-secret-pw \
