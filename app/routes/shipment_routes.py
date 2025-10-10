@@ -106,6 +106,24 @@ async def get_shipments_by_customer(customer_id: int):
 
 
 @router.get(
+    path="/voyage/{voyage_id}",
+    summary="Get shipments by voyage",
+    description="Retrieves all shipments for a specific voyage",
+    response_model=List[ShipmentResponse]
+)
+async def get_shipments_by_voyage(voyage_id: int):
+    try:
+        shipment_service = ShipmentService()
+        return await shipment_service.get_shipments_by_voyage(voyage_id)
+    except Exception as e:
+        logging.error(f"Error retrieving shipments by voyage: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error retrieving shipments by voyage: {str(e)}"
+        )
+
+
+@router.get(
     path="",
     summary="Get all shipments",
     description="Retrieves a paginated list of shipments",
@@ -171,4 +189,3 @@ async def delete_shipment(shipment_id: int):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error deleting shipment: {str(e)}"
         )
-
