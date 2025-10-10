@@ -34,7 +34,8 @@ origins = [
     "http://localhost:4200",
     "http://localhost",
     "http://localhost:8080",
-    "https://hormic-nongravitative-sadye.ngrok-free.dev"
+    "https://hormic-nongravitative-sadye.ngrok-free.dev",
+    "*"  # Permitir todos los orígenes (útil para desarrollo, pero no recomendado para producción)
 ]
 app.add_middleware(
     CORSMiddleware,
