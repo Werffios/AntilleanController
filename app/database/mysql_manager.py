@@ -13,11 +13,11 @@ class MySQLManager:
         parsed = urlparse(mysql_url)
         query_params = parse_qs(parsed.query)
 
-        self.host = parsed.hostname or "localhost"
+        self.host = parsed.hostname or "192.168.10.4"
         self.port = parsed.port or 3306
         self.user = parsed.username or "root"
-        self.password = parsed.password or ""
-        self.database = parsed.path.lstrip('/') or "testdb"
+        self.password = parsed.password or "rDEAkeRYphYptoTHLopicOmeL"
+        self.database = parsed.path.lstrip('/') or "antillean_app"
         self.autocommit = query_params.get('autocommit', ['true'])[0].lower() == 'true'
         self.connection = None
 
