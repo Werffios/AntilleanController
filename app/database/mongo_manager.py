@@ -9,8 +9,8 @@ load_dotenv()
 class MongoManager:
     def __init__(self):
         self.mongo_url = os.getenv("MONGO_URL", "mongodb://localhost:27017/testdb")
-        parsed = urlparse(self.mongo_url)
-        self.database_name = parsed.path.lstrip('/') or "testdb"
+        # parsed = urlparse(self.mongo_url)
+        self.database_name = 'hoopo_db'
         self.client = None
         self.db = None
 
