@@ -22,6 +22,7 @@ class MySQLManager:
         self.connection = None
 
     async def create_connection(self):
+        logging.info(f"Attempting to connect to MySQL database {self.database} at {self.host}:{self.port} with user {self.user}, database={self.database} and password={self.password}")
         try:
             self.connection = await mysql.connector.aio.connect(
                 host=self.host,
@@ -35,6 +36,7 @@ class MySQLManager:
                 print("Conexión exitosa a la base de datos MySQL")
         except Error as e:
             logging.error(f"Unexpected error in connect_db: {str(e)}")
+            raise
 
     async def close_connection(self):
         try:
