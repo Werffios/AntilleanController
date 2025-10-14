@@ -1,7 +1,7 @@
 import logging
 import os
 from dotenv import load_dotenv
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import urlparse, parse_qs, unquote
 import mysql.connector.aio
 from mysql.connector import Error
 
@@ -16,7 +16,7 @@ class MySQLManager:
         self.host = parsed.hostname or "192.168.10.4"
         self.port = parsed.port or 3306
         self.user = parsed.username or "root"
-        self.password = parsed.password or "rDEAkeRYphYptoTHLopicOmeL"
+        self.password = unquote(parsed.password) if parsed.password else "cuhLNiLfoNv4uU3FGn4rHa9uLJWL/6ZPLCetcZOzXJA="
         self.database = parsed.path.lstrip('/') or "antillean_app"
         self.autocommit = query_params.get('autocommit', ['true'])[0].lower() == 'true'
         self.connection = None
