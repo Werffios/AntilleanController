@@ -9,9 +9,7 @@ services:
 #      - "8452:5000"
     networks:
       - pro-network
-    volumes:
-      - .:/app
-      -
+
 networks:
   net:
     external: true
