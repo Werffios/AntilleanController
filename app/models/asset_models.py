@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, PositiveInt
 from typing import Optional
 from datetime import datetime, date
 from enum import Enum
@@ -45,7 +45,7 @@ class AssetBase(BaseModel):
     last_maintenance_at: Optional[date] = None
     last_inspection_at: Optional[date] = None
     next_inspection_due_at: Optional[date] = None
-    max_payload_kg: int
+    max_payload_kg: PositiveInt
 
 
 class AssetCreate(AssetBase):
@@ -64,7 +64,7 @@ class AssetUpdate(BaseModel):
     last_maintenance_at: Optional[date] = None
     last_inspection_at: Optional[date] = None
     next_inspection_due_at: Optional[date] = None
-    max_payload_kg: Optional[int] = None
+    max_payload_kg: Optional[PositiveInt] = None
 
 
 class AssetResponse(AssetBase):

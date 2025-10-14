@@ -2,127 +2,125 @@ import logging
 from typing import List
 from fastapi import APIRouter, HTTPException, status, Query
 
-from app.services.route_service import RouteService
-from app.models.route_models import RouteCreate, RouteUpdate, RouteResponse
+from app.services.asset_type_service import AssetTypeService
+from app.models.asset_type_models import AssetTypeCreate, AssetTypeUpdate, AssetTypeResponse
 
 
 router = APIRouter(
-    prefix="/routes",
-    tags=["Routes"]
+    prefix="/asset-types",
+    tags=["Asset Types"]
 )
 
 
 @router.post(
     path="",
-    summary="Create a new route",
-    description="Creates a new route in the system",
-    response_model=RouteResponse,
+    summary="Create a new asset type",
+    description="Creates a new asset type in the system",
+    response_model=AssetTypeResponse,
     status_code=status.HTTP_201_CREATED
 )
-async def create_route(route: RouteCreate):
+async def create_asset_type(asset_type: AssetTypeCreate):
     try:
-        route_service = RouteService()
-        return await route_service.create_route(route)
+        asset_type_service = AssetTypeService()
+        return await asset_type_service.create_asset_type(asset_type)
     except Exception as e:
-        logging.error(f"Error creating route: {str(e)}")
+        logging.error(f"Error creating asset type: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error creating route: {str(e)}"
+            detail=f"Error creating asset type: {str(e)}"
         )
 
 
 @router.get(
-    path="/{route_id}",
-    summary="Get route by ID",
-    description="Retrieves a route by its ID",
-    response_model=RouteResponse
+    path="/{asset_type_id}",
+    summary="Get asset type by ID",
+    description="Retrieves an asset type by its ID",
+    response_model=AssetTypeResponse
 )
-async def get_route(route_id: int):
+async def get_asset_type(asset_type_id: int):
     try:
-        route_service = RouteService()
-        route = await route_service.get_route_by_id(route_id)
+        asset_type_service = AssetTypeService()
+        asset_type = await asset_type_service.get_asset_type_by_id(asset_type_id)
 
-        if not route:
+        if not asset_type:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Route with ID {route_id} not found"
+                detail=f"Asset type with ID {asset_type_id} not found"
             )
 
-        return route
+        return asset_type
     except HTTPException:
         raise
     except Exception as e:
-        logging.error(f"Error retrieving route: {str(e)}")
+        logging.error(f"Error retrieving asset type: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error retrieving route: {str(e)}"
+            detail=f"Error retrieving asset type: {str(e)}"
         )
 
 
 @router.get(
     path="",
-    summary="Get all routes",
-    description="Retrieves a paginated list of routes",
-    response_model=List[RouteResponse]
+    summary="Get all asset types",
+    description="Retrieves all asset types with pagination",
+    response_model=List[AssetTypeResponse]
 )
-async def get_all_routes(
-    limit: int = Query(100, ge=1, le=1000),
-    offset: int = Query(0, ge=0)
+async def get_all_asset_types(
+    limit: int = Query(default=100, ge=1, le=1000),
+    offset: int = Query(default=0, ge=0)
 ):
     try:
-        route_service = RouteService()
-        return await route_service.get_all_routes(limit, offset)
+        asset_type_service = AssetTypeService()
+        return await asset_type_service.get_all_asset_types(limit, offset)
     except Exception as e:
-        logging.error(f"Error retrieving routes: {str(e)}")
+        logging.error(f"Error retrieving asset types: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error retrieving routes: {str(e)}"
+            detail=f"Error retrieving asset types: {str(e)}"
         )
 
 
 @router.put(
-    path="/{route_id}",
-    summary="Update route",
-    description="Updates an existing route",
-    response_model=RouteResponse
+    path="/{asset_type_id}",
+    summary="Update asset type",
+    description="Updates an existing asset type",
+    response_model=AssetTypeResponse
 )
-async def update_route(route_id: int, route: RouteUpdate):
+async def update_asset_type(asset_type_id: int, asset_type: AssetTypeUpdate):
     try:
-        route_service = RouteService()
-        updated_route = await route_service.update_route(route_id, route)
+        asset_type_service = AssetTypeService()
+        updated_asset_type = await asset_type_service.update_asset_type(asset_type_id, asset_type)
 
-        if not updated_route:
+        if not updated_asset_type:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Route with ID {route_id} not found"
+                detail=f"Asset type with ID {asset_type_id} not found"
             )
 
-        return updated_route
+        return updated_asset_type
     except HTTPException:
         raise
     except Exception as e:
-        logging.error(f"Error updating route: {str(e)}")
+        logging.error(f"Error updating asset type: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error updating route: {str(e)}"
+            detail=f"Error updating asset type: {str(e)}"
         )
 
 
 @router.delete(
-    path="/{route_id}",
-    summary="Delete route",
-    description="Deletes a route from the system",
+    path="/{asset_type_id}",
+    summary="Delete asset type",
+    description="Deletes an asset type by ID",
     status_code=status.HTTP_204_NO_CONTENT
 )
-async def delete_route(route_id: int):
+async def delete_asset_type(asset_type_id: int):
     try:
-        route_service = RouteService()
-        await route_service.delete_route(route_id)
-        return None
+        asset_type_service = AssetTypeService()
+        await asset_type_service.delete_asset_type(asset_type_id)
     except Exception as e:
-        logging.error(f"Error deleting route: {str(e)}")
+        logging.error(f"Error deleting asset type: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error deleting route: {str(e)}"
+            detail=f"Error deleting asset type: {str(e)}"
         )
-
