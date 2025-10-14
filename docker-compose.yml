@@ -11,5 +11,5 @@ services:
       - pro-network
 
 networks:
-  net:
+  pro-network:
     external: true
