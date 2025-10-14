@@ -1,19 +1,17 @@
-# docker-compose.yml
-networks:
-  net:
-    external: true
-
 services:
   fastapi:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: antillean_new_demo
+    container_name: antillean_backend
     restart: always
 #    ports:
 #      - "8452:5000"
     networks:
-      net:
-        ipv4_address: 192.168.10.30
+      - pro-network
     volumes:
       - .:/app
+      -
+networks:
+  net:
+    external: true
