@@ -4,17 +4,15 @@ LABEL authors="Nicolás Suárez"
 # Establecer el directorio de trabajo
 WORKDIR /app
 
-# Copiar los archivos de la aplicación
-COPY . .
+# Instalar las dependencias del sistema necesarias para compilar extensiones (bcrypt/cryptography)
+RUN apk add --no-cache gcc musl-dev libffi-dev rust cargo openssl-dev
 
-# Instalar las dependencias del sistema
-RUN apk add --no-cache gcc musl-dev libffi-dev rust cargo
-
-# Copy requirements.txt first
-COPY requirements.txt .
-
-# Instalar las dependencias de Python
+# Copiar y instalar dependencias Python primero (mejor caché)
+COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
+
+# Copiar el resto de la aplicación
+COPY . .
 
 # Exponer el puerto 5000
 EXPOSE 5000
@@ -30,4 +28,3 @@ CMD ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "5000"]
 #  -e MYSQL_PASSWORD=myuser-pw \
 #  -p 3306:3306 \
 #  -d mysql:latest
-
