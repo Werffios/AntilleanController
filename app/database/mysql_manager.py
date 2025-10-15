@@ -33,7 +33,7 @@ class MySQLManager:
                 autocommit=self.autocommit
             )
             if await self.connection.is_connected():
-                print("Conexión exitosa a la base de datos MySQL")
+                logging.info("Conexión exitosa a la base de datos MySQL")
         except Error as e:
             logging.error(f"Unexpected error in connect_db: {str(e)}")
             raise
@@ -42,7 +42,7 @@ class MySQLManager:
         try:
             if self.connection is not None and await self.connection.is_connected():
                 await self.connection.close()
-                print("Conexión cerrada")
+                logging.info("Conexión cerrada")
         except Error as e:
             logging.error(f"Unexpected error in close_db: {str(e)}")
 
@@ -55,7 +55,7 @@ class MySQLManager:
             qtype = query.strip().split()[0].lower() if query else ""
             if qtype == 'select':
                 rows = await cursor.fetchall()
-                print("Query executed successfully", query, self.autocommit)
+                logging.info(f"Query executed successfully | query={query} params={params or ()} autocommit={self.autocommit}")
                 return rows
             else:
                 if not self.autocommit:
@@ -68,7 +68,7 @@ class MySQLManager:
                         meta['last_insert_id'] = cursor.lastrowid
                     except Exception:
                         meta['last_insert_id'] = None
-                print("Query executed successfully", query, self.autocommit)
+                logging.info(f"Query executed successfully | query={query} params={params or ()} autocommit={self.autocommit}")
                 return [meta]
         except Error as e:
             logging.error(f"Error executing query: {e}")

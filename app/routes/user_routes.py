@@ -1,32 +1,18 @@
 import logging
-from typing import List
-from fastapi import APIRouter, HTTPException, status, Query
+from fastapi import APIRouter, HTTPException, status, Depends
 from app.services.user_service import UserService
-from app.models.user_models import UserCreate, UserUpdate, UserResponse
+from app.models.user_models import UserCreate, UserResponse
+from app.security.jwt_utils import get_current_user
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
-@router.post("", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
-async def create_user(user: UserCreate):
-    try:
-        user_service = UserService()
-        return await user_service.create_user(user)
-    except Exception as e:
-        logging.error(f"Error creating user: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-@router.get("/{user_id}", response_model=UserResponse)
-async def get_user(user_id: int):
-    try:
-        user_service = UserService()
-        user = await user_service.get_user_by_id(user_id)
-        if not user:
-            raise HTTPException(status_code=404, detail="User not found")
-        return user
-    except HTTPException:
-        raise
-    except Exception as e:
-        logging.error(f"Error retrieving user: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
+@router.get(
+    path="/me",
+    response_model=UserResponse
+)
+async def get_me(
+        current_user: UserResponse = Depends(get_current_user)
+):
+    return current_user
 
 # Todo: Aquí irían los endpoints para GET (all), PUT y DELETE, siguiendo el patrón de las otras rutas.

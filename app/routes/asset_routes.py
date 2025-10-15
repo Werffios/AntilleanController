@@ -1,7 +1,9 @@
 import logging
 from typing import List
-from fastapi import APIRouter, HTTPException, status, Query
+from fastapi import APIRouter, HTTPException, status, Query, Depends
 
+from app.models.user_models import UserResponse
+from app.security.jwt_utils import get_current_user
 from app.services.asset_service import AssetService
 from app.models.asset_models import AssetCreate, AssetUpdate, AssetResponse
 
@@ -65,10 +67,7 @@ async def get_asset(asset_id: int):
     description="Retrieves a paginated list of assets",
     response_model=List[AssetResponse]
 )
-async def get_all_assets(
-    limit: int = Query(100, ge=1, le=1000),
-    offset: int = Query(0, ge=0)
-):
+async def get_all_assets(limit: int = ..., offset: int = ..., current_user: UserResponse = Depends(get_current_user)):
     try:
         asset_service = AssetService()
         return await asset_service.get_all_assets(limit, offset)
