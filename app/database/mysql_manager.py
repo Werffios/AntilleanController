@@ -22,7 +22,7 @@ class MySQLManager:
         self.connection = None
 
     async def create_connection(self):
-        logging.info(f"Attempting to connect to MySQL database {self.database} at {self.host}:{self.port} with user {self.user}, database={self.database} and password={self.password}")
+        # logging.info(f"Attempting to connect to MySQL database {self.database} at {self.host}:{self.port} with user {self.user}, database={self.database} and password={self.password}")
         try:
             self.connection = await mysql.connector.aio.connect(
                 host=self.host,
@@ -32,7 +32,7 @@ class MySQLManager:
                 database=self.database,
                 autocommit=self.autocommit
             )
-            if self.connection.is_connected():
+            if await self.connection.is_connected():
                 print("Conexión exitosa a la base de datos MySQL")
         except Error as e:
             logging.error(f"Unexpected error in connect_db: {str(e)}")
@@ -40,20 +40,36 @@ class MySQLManager:
 
     async def close_connection(self):
         try:
-            if self.connection is not None and self.connection.is_connected():
+            if self.connection is not None and await self.connection.is_connected():
                 await self.connection.close()
                 print("Conexión cerrada")
         except Error as e:
             logging.error(f"Unexpected error in close_db: {str(e)}")
 
     async def execute(self, query, params=None):
-        if self.connection is None or not self.connection.is_connected():
+        if self.connection is None or not await self.connection.is_connected():
             raise Exception("Database connection is not established.")
         cursor = await self.connection.cursor(dictionary=True)
         try:
             await cursor.execute(query, params or ())
-            print("Query executed successfully", query, self.autocommit)
-            return await cursor.fetchall()
+            qtype = query.strip().split()[0].lower() if query else ""
+            if qtype == 'select':
+                rows = await cursor.fetchall()
+                print("Query executed successfully", query, self.autocommit)
+                return rows
+            else:
+                if not self.autocommit:
+                    await self.connection.commit()
+                meta = {
+                    'rowcount': cursor.rowcount,
+                }
+                if qtype == 'insert':
+                    try:
+                        meta['last_insert_id'] = cursor.lastrowid
+                    except Exception:
+                        meta['last_insert_id'] = None
+                print("Query executed successfully", query, self.autocommit)
+                return [meta]
         except Error as e:
             logging.error(f"Error executing query: {e}")
             raise
