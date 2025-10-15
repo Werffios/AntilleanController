@@ -14,7 +14,9 @@ from app.routes import (
     tracker_event_routes,
     bill_of_lading_routes,
     shipment_item_routes,
-    maintenance_routes
+    maintenance_routes,
+    user_routes,
+    auth_routes,
 )
 
 
@@ -32,6 +34,8 @@ api_router.include_router(shipment_routes.router)
 api_router.include_router(shipment_item_routes.router)
 api_router.include_router(bill_of_lading_routes.router)
 api_router.include_router(maintenance_routes.router)
+api_router.include_router(user_routes.router)
+api_router.include_router(auth_routes.router)
 
 
 
