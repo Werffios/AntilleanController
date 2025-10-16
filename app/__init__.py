@@ -33,7 +33,7 @@ app = FastAPI(
 )
 default_origin = "https://antillean.app"
 
-origins = [o.strip().rstrip('/') for o in env_origins.split(",") if o.strip()]
+origins = [o.strip().rstrip('/') for o in default_origin.split(",") if o.strip()]
 
 # optional dev origin toggle (keeps middleware behavior you had)
 if os.getenv("ENABLE_DEV_CORS", "false").lower() == "true":
