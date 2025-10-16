@@ -31,18 +31,17 @@ app = FastAPI(
     docs_url="/v1/api/docs",
     redoc_url="/v1/api/redoc",
 )
-
+origins = ["https://antillean.app/"]
 # CORS opcional solo si ENABLE_DEV_CORS=true
 if os.getenv("ENABLE_DEV_CORS", "false").lower() == "true":
-    origins = [
-        os.getenv("DEV_UI_ORIGIN", "http://localhost:4200"),
-    ]
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=origins,
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
+    origins.append(os.getenv("DEV_UI_ORIGIN", "http://localhost:4200"))
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 from .views import *
