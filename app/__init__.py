@@ -31,10 +31,15 @@ app = FastAPI(
     docs_url="/v1/api/docs",
     redoc_url="/v1/api/redoc",
 )
-origins = ["https://antillean.app/"]
-# CORS opcional solo si ENABLE_DEV_CORS=true
+default_origin = "https://antillean.app"
+
+origins = [o.strip().rstrip('/') for o in env_origins.split(",") if o.strip()]
+
+# optional dev origin toggle (keeps middleware behavior you had)
 if os.getenv("ENABLE_DEV_CORS", "false").lower() == "true":
-    origins.append(os.getenv("DEV_UI_ORIGIN", "http://localhost:4200"))
+    dev_origin = os.getenv("DEV_UI_ORIGIN", "http://localhost:4200").rstrip('/')
+    if dev_origin not in origins:
+        origins.append(dev_origin)
 
 app.add_middleware(
     CORSMiddleware,
