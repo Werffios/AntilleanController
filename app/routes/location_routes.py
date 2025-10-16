@@ -1,6 +1,8 @@
 import logging
 from typing import List
-from fastapi import APIRouter, HTTPException, status, Query
+from fastapi import APIRouter, HTTPException, status, Query, Depends
+
+from app.security.jwt_utils import get_current_user
 
 from app.services.location_service import LocationService
 from app.models.location_models import LocationCreate, LocationUpdate, LocationResponse
@@ -8,7 +10,8 @@ from app.models.location_models import LocationCreate, LocationUpdate, LocationR
 
 router = APIRouter(
     prefix="/locations",
-    tags=["Locations"]
+    tags=["Locations"],
+    dependencies=[Depends(get_current_user)]
 )
 
 

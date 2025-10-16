@@ -1,6 +1,8 @@
 import logging
 from typing import List
-from fastapi import APIRouter, HTTPException, status, Query
+from fastapi import APIRouter, HTTPException, status, Query, Depends
+
+from app.security.jwt_utils import get_current_user
 
 from app.services.vessel_service import VesselService
 from app.models.vessel_models import VesselCreate, VesselUpdate, VesselResponse
@@ -8,7 +10,8 @@ from app.models.vessel_models import VesselCreate, VesselUpdate, VesselResponse
 
 router = APIRouter(
     prefix="/vessels",
-    tags=["Vessels"]
+    tags=["Vessels"],
+    dependencies=[Depends(get_current_user)]
 )
 
 

@@ -1,6 +1,8 @@
 import logging
 from typing import List
-from fastapi import APIRouter, HTTPException, status, Query
+from fastapi import APIRouter, HTTPException, status, Query, Depends
+
+from app.security.jwt_utils import get_current_user
 
 from app.services.bill_of_lading_service import BillOfLadingService
 from app.models.bill_of_lading_models import BillOfLadingCreate, BillOfLadingUpdate, BillOfLadingResponse
@@ -8,7 +10,8 @@ from app.models.bill_of_lading_models import BillOfLadingCreate, BillOfLadingUpd
 
 router = APIRouter(
     prefix="/bills-of-lading",
-    tags=["Bills of Lading"]
+    tags=["Bills of Lading"],
+    dependencies=[Depends(get_current_user)]
 )
 
 

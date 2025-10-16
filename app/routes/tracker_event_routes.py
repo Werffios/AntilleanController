@@ -1,6 +1,8 @@
 import logging
 from typing import List
-from fastapi import APIRouter, HTTPException, status, Query
+from fastapi import APIRouter, HTTPException, status, Query, Depends
+
+from app.security.jwt_utils import get_current_user
 
 from app.services.tracker_event_service import TrackerEventService
 from app.models.tracker_event_models import TrackerEventResponse
@@ -8,7 +10,8 @@ from app.models.tracker_event_models import TrackerEventResponse
 
 router = APIRouter(
     prefix="/tracker-events",
-    tags=["Tracker Events"]
+    tags=["Tracker Events"],
+    dependencies=[Depends(get_current_user)]
 )
 
 

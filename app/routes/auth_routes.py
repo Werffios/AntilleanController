@@ -4,7 +4,10 @@ from app.models.auth_models import RegisterRequest, LoginRequest, AuthResponse
 from app.security.jwt_utils import create_access_token
 from app.services.user_service import UserService
 
-router = APIRouter(prefix="/auth", tags=["Auth"])
+router = APIRouter(
+    prefix="/auth",
+    tags=["Auth"]
+)
 
 @router.post("/register", response_model=AuthResponse, status_code=status.HTTP_201_CREATED)
 async def register(req: RegisterRequest):

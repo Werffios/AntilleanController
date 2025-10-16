@@ -1,6 +1,8 @@
 import logging
 from typing import List
-from fastapi import APIRouter, HTTPException, status, Query
+from fastapi import APIRouter, HTTPException, status, Query, Depends
+
+from app.security.jwt_utils import get_current_user
 
 from app.services.route_service import RouteService
 from app.models.route_models import RouteCreate, RouteUpdate, RouteResponse
@@ -8,7 +10,8 @@ from app.models.route_models import RouteCreate, RouteUpdate, RouteResponse
 
 router = APIRouter(
     prefix="/routes",
-    tags=["Routes"]
+    tags=["Routes"],
+    dependencies=[Depends(get_current_user)]
 )
 
 

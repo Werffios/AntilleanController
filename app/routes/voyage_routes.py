@@ -1,6 +1,8 @@
 import logging
 from typing import List
-from fastapi import APIRouter, HTTPException, status, Query
+from fastapi import APIRouter, HTTPException, status, Query, Depends
+
+from app.security.jwt_utils import get_current_user
 
 from app.services.voyage_service import VoyageService
 from app.models.voyage_models import VoyageCreate, VoyageUpdate, VoyageResponse
@@ -8,7 +10,8 @@ from app.models.voyage_models import VoyageCreate, VoyageUpdate, VoyageResponse
 
 router = APIRouter(
     prefix="/voyages",
-    tags=["Voyages"]
+    tags=["Voyages"],
+    dependencies=[Depends(get_current_user)]
 )
 
 

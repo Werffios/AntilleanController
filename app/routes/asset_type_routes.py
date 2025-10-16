@@ -1,14 +1,16 @@
 import logging
 from typing import List
-from fastapi import APIRouter, HTTPException, status, Query
+from fastapi import APIRouter, HTTPException, status, Query, Depends
 
+from app.security.jwt_utils import get_current_user
 from app.services.asset_type_service import AssetTypeService
 from app.models.asset_type_models import AssetTypeCreate, AssetTypeUpdate, AssetTypeResponse
 
 
 router = APIRouter(
     prefix="/asset-types",
-    tags=["Asset Types"]
+    tags=["Asset Types"],
+    dependencies=[Depends(get_current_user)]
 )
 
 

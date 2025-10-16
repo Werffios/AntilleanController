@@ -1,6 +1,8 @@
 import logging
 from typing import List
-from fastapi import APIRouter, HTTPException, status, Query
+from fastapi import APIRouter, HTTPException, status, Query, Depends
+
+from app.security.jwt_utils import get_current_user
 
 from app.services.maintenance_service import MaintenanceService
 from app.models.maintenance_models import MaintenanceCreate, MaintenanceUpdate, MaintenanceResponse
@@ -8,7 +10,8 @@ from app.models.maintenance_models import MaintenanceCreate, MaintenanceUpdate, 
 
 router = APIRouter(
     prefix="/maintenances",
-    tags=["Maintenances"]
+    tags=["Maintenances"],
+    dependencies=[Depends(get_current_user)]
 )
 
 

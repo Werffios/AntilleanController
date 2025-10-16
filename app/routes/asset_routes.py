@@ -10,7 +10,8 @@ from app.models.asset_models import AssetCreate, AssetUpdate, AssetResponse
 
 router = APIRouter(
     prefix="/assets",
-    tags=["Assets"]
+    tags=["Assets"],
+    dependencies=[Depends(get_current_user)]
 )
 
 
@@ -67,7 +68,10 @@ async def get_asset(asset_id: int):
     description="Retrieves a paginated list of assets",
     response_model=List[AssetResponse]
 )
-async def get_all_assets(limit: int = ..., offset: int = ..., current_user: UserResponse = Depends(get_current_user)):
+async def get_all_assets(
+    limit: int = Query(100, ge=1, le=1000),
+    offset: int = Query(0, ge=0)
+):
     try:
         asset_service = AssetService()
         return await asset_service.get_all_assets(limit, offset)

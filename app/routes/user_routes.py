@@ -1,10 +1,15 @@
 import logging
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, status, Depends, Depends
+
+from app.security.jwt_utils import get_current_user
 from app.services.user_service import UserService
 from app.models.user_models import UserCreate, UserResponse
-from app.security.jwt_utils import get_current_user
 
-router = APIRouter(prefix="/users", tags=["Users"])
+router = APIRouter(
+    prefix="/users",
+    tags=["Users"],
+    dependencies=[Depends(get_current_user)]
+)
 
 @router.get(
     path="/me",

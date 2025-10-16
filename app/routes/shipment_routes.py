@@ -1,6 +1,8 @@
 import logging
 from typing import List
-from fastapi import APIRouter, HTTPException, status, Query
+from fastapi import APIRouter, HTTPException, status, Query, Depends
+
+from app.security.jwt_utils import get_current_user
 
 from app.services.shipment_service import ShipmentService
 from app.models.shipment_models import ShipmentCreate, ShipmentUpdate, ShipmentResponse
@@ -8,7 +10,8 @@ from app.models.shipment_models import ShipmentCreate, ShipmentUpdate, ShipmentR
 
 router = APIRouter(
     prefix="/shipments",
-    tags=["Shipments"]
+    tags=["Shipments"],
+    dependencies=[Depends(get_current_user)]
 )
 
 
