@@ -34,6 +34,64 @@ class TrackerEventService:
         finally:
             await self.mongo_manager.close_connection()
 
+    async def get_tracker_events_by_date_range(
+            self,
+            tracker_id: str,
+            start_date: Optional[str] = None,
+            end_date: Optional[str] = None,
+            limit: int = 100,
+            offset: int = 0
+    ) -> List[TrackerEventResponse]:
+        """
+        Retrieves tracker events for a specific TrackerId within a date range
+        """
+        try:
+            from datetime import datetime, timezone
+
+            # Set default dates to today if not provided
+            today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+            start_date = start_date or today
+            end_date = end_date or today
+
+            # Parse dates and create datetime objects
+            start_datetime = datetime.strptime(start_date, "%Y-%m-%d").replace(
+                hour=0, minute=0, second=0, microsecond=0, tzinfo=timezone.utc
+            )
+            end_datetime = datetime.strptime(end_date, "%Y-%m-%d").replace(
+                hour=23, minute=59, second=59, microsecond=999999, tzinfo=timezone.utc
+            )
+
+            await self.mongo_manager.create_connection()
+            collection = await self.mongo_manager.get_collection(self.collection_name)
+
+            # Build query with tracker_id and date range
+            query = {
+                "TrackerId": tracker_id,
+                "EventTime": {
+                    "$gte": start_datetime,
+                    "$lte": end_datetime
+                }
+            }
+
+            cursor = collection.find(query).sort("EventTime", -1).skip(offset).limit(limit)
+            events = await cursor.to_list(length=limit)
+
+            # Convert ObjectId to string for response
+            result = []
+            for event in events:
+                event['_id'] = str(event['_id'])
+                result.append(TrackerEventResponse(**event))
+
+            return result
+        except ValueError as e:
+            logging.error(f"Date parsing error: {str(e)}")
+            raise ValueError("Invalid date format. Use YYYY-MM-DD format.")
+        except Exception as e:
+            logging.error(f"Error retrieving tracker events by date range: {str(e)}")
+            raise
+        finally:
+            await self.mongo_manager.close_connection()
+
     async def get_tracker_events_by_tracker_id(self, tracker_id: str, limit: int = 100, offset: int = 0) -> List[
         TrackerEventResponse]:
         """

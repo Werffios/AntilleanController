@@ -68,7 +68,38 @@ async def get_tracker_events_by_tracker_id(
             detail=f"Error retrieving tracker events: {str(e)}"
         )
 
-
+@router.get(
+    path="/tracker/{tracker_id}/date-range",
+    summary="Get tracker events by TrackerId and date range",
+    description="Retrieves tracker events for a specific TrackerId within a date range, sorted by EventTime (most recent first)",
+    response_model=List[TrackerEventResponse]
+)
+async def get_tracker_events_by_date_range(
+    tracker_id: str,
+    start_date: str = Query(None, description="Start date in YYYY-MM-DD format (defaults to today)"),
+    end_date: str = Query(None, description="End date in YYYY-MM-DD format (defaults to today)"),
+    limit: int = Query(100, ge=1, le=1000, description="Number of records to return"),
+    offset: int = Query(0, ge=0, description="Number of records to skip")
+):
+    try:
+        tracker_event_service = TrackerEventService()
+        events = await tracker_event_service.get_tracker_events_by_date_range(
+            tracker_id, start_date, end_date, limit, offset
+        )
+        if not events:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"No events found for TrackerId: {tracker_id} in the specified date range"
+            )
+        return events
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error retrieving tracker events by date range: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error retrieving tracker events: {str(e)}"
+        )
 
 @router.get(
     path="/event/{event_id}",
@@ -135,4 +166,3 @@ async def count_tracker_events_by_tracker_id(tracker_id: str):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error counting tracker events: {str(e)}"
         )
-
