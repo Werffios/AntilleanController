@@ -64,11 +64,11 @@ class MaintenanceService:
         finally:
             await self.db_service.disconnect()
 
-    async def get_maintenances_by_asset(self, asset_id: int) -> List[MaintenanceResponse]:
+    async def get_maintenances_by_asset(self, asset_id: int, limit: int = 100, offset: int = 0) -> List[MaintenanceResponse]:
         try:
             await self.db_service.connect()
-            query = "SELECT * FROM maintenances WHERE asset_id = %s"
-            result = await self.db_service.execute(query, (asset_id,))
+            query = "SELECT * FROM maintenances WHERE asset_id = %s LIMIT %s OFFSET %s"
+            result = await self.db_service.execute(query, (asset_id, limit, offset))
 
             return [MaintenanceResponse(**row) for row in result]
         except Exception as e:
@@ -77,11 +77,11 @@ class MaintenanceService:
         finally:
             await self.db_service.disconnect()
 
-    async def get_maintenances_by_status(self, status: str) -> List[MaintenanceResponse]:
+    async def get_maintenances_by_status(self, status: str, limit: int = 100, offset: int = 0) -> List[MaintenanceResponse]:
         try:
             await self.db_service.connect()
-            query = "SELECT * FROM maintenances WHERE status = %s"
-            result = await self.db_service.execute(query, (status,))
+            query = "SELECT * FROM maintenances WHERE status = %s LIMIT %s OFFSET %s"
+            result = await self.db_service.execute(query, (status, limit, offset))
 
             return [MaintenanceResponse(**row) for row in result]
         except Exception as e:
@@ -90,11 +90,11 @@ class MaintenanceService:
         finally:
             await self.db_service.disconnect()
 
-    async def get_maintenances_by_type(self, maintenance_type: str) -> List[MaintenanceResponse]:
+    async def get_maintenances_by_type(self, maintenance_type: str, limit: int = 100, offset: int = 0) -> List[MaintenanceResponse]:
         try:
             await self.db_service.connect()
-            query = "SELECT * FROM maintenances WHERE maintenance_type = %s"
-            result = await self.db_service.execute(query, (maintenance_type,))
+            query = "SELECT * FROM maintenances WHERE maintenance_type = %s LIMIT %s OFFSET %s"
+            result = await self.db_service.execute(query, (maintenance_type, limit, offset))
 
             return [MaintenanceResponse(**row) for row in result]
         except Exception as e:
@@ -165,4 +165,3 @@ class MaintenanceService:
             raise
         finally:
             await self.db_service.disconnect()
-

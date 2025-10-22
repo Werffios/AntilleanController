@@ -68,10 +68,14 @@ async def get_maintenance(maintenance_id: int):
     description="Retrieves all maintenance records for a specific asset",
     response_model=List[MaintenanceResponse]
 )
-async def get_maintenances_by_asset(asset_id: int):
+async def get_maintenances_by_asset(
+    asset_id: int,
+    limit: int = Query(100, ge=1, le=1000, description="Number of records to return"),
+    offset: int = Query(0, ge=0, description="Number of records to skip")
+):
     try:
         maintenance_service = MaintenanceService()
-        return await maintenance_service.get_maintenances_by_asset(asset_id)
+        return await maintenance_service.get_maintenances_by_asset(asset_id, limit, offset)
     except Exception as e:
         logging.error(f"Error retrieving maintenances: {str(e)}")
         raise HTTPException(
@@ -86,10 +90,14 @@ async def get_maintenances_by_asset(asset_id: int):
     description="Retrieves all maintenance records with a specific status",
     response_model=List[MaintenanceResponse]
 )
-async def get_maintenances_by_status(status: str):
+async def get_maintenances_by_status(
+    status: str,
+    limit: int = Query(100, ge=1, le=1000, description="Number of records to return"),
+    offset: int = Query(0, ge=0, description="Number of records to skip")
+):
     try:
         maintenance_service = MaintenanceService()
-        return await maintenance_service.get_maintenances_by_status(status)
+        return await maintenance_service.get_maintenances_by_status(status, limit, offset)
     except Exception as e:
         logging.error(f"Error retrieving maintenances by status: {str(e)}")
         raise HTTPException(
@@ -104,10 +112,14 @@ async def get_maintenances_by_status(status: str):
     description="Retrieves all maintenance records of a specific type",
     response_model=List[MaintenanceResponse]
 )
-async def get_maintenances_by_type(maintenance_type: str):
+async def get_maintenances_by_type(
+    maintenance_type: str,
+    limit: int = Query(100, ge=1, le=1000, description="Number of records to return"),
+    offset: int = Query(0, ge=0, description="Number of records to skip")
+):
     try:
         maintenance_service = MaintenanceService()
-        return await maintenance_service.get_maintenances_by_type(maintenance_type)
+        return await maintenance_service.get_maintenances_by_type(maintenance_type, limit, offset)
     except Exception as e:
         logging.error(f"Error retrieving maintenances by type: {str(e)}")
         raise HTTPException(
@@ -123,8 +135,8 @@ async def get_maintenances_by_type(maintenance_type: str):
     response_model=List[MaintenanceResponse]
 )
 async def get_all_maintenances(
-    limit: int = Query(100, ge=1, le=1000),
-    offset: int = Query(0, ge=0)
+    limit: int = Query(100, ge=1, le=1000, description="Number of records to return"),
+    offset: int = Query(0, ge=0, description="Number of records to skip")
 ):
     try:
         maintenance_service = MaintenanceService()
@@ -182,4 +194,3 @@ async def delete_maintenance(maintenance_id: int):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error deleting maintenance: {str(e)}"
         )
-
