@@ -17,6 +17,8 @@ from app.routes import (
     maintenance_routes,
     user_routes,
     auth_routes,
+    spare_part_routes,
+    maintenance_part_routes,
 )
 
 
@@ -34,6 +36,8 @@ api_router.include_router(shipment_routes.router)
 api_router.include_router(shipment_item_routes.router)
 api_router.include_router(bill_of_lading_routes.router)
 api_router.include_router(maintenance_routes.router)
+api_router.include_router(spare_part_routes.router)
+api_router.include_router(maintenance_part_routes.router)
 api_router.include_router(user_routes.router)
 api_router.include_router(auth_routes.router)
 
