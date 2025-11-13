@@ -38,34 +38,6 @@ async def create_maintenance_part(item: MaintenancePartCreate):
 
 
 @router.get(
-    path="/{maintenance_id}/{spare_part_id}",
-    summary="Get maintenance part by IDs",
-    description="Retrieves a maintenance part consumption by maintenance and spare part IDs",
-    response_model=MaintenancePartResponse
-)
-async def get_maintenance_part(maintenance_id: int, spare_part_id: int):
-    try:
-        service = MaintenancePartService()
-        item = await service.get_maintenance_part(maintenance_id, spare_part_id)
-
-        if not item:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Maintenance part with maintenance_id={maintenance_id} and spare_part_id={spare_part_id} not found"
-            )
-
-        return item
-    except HTTPException:
-        raise
-    except Exception as e:
-        logging.error(f"Error retrieving maintenance part: {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error retrieving maintenance part: {str(e)}"
-        )
-
-
-@router.get(
     path="/maintenance/{maintenance_id}",
     summary="Get parts consumed by maintenance",
     description="Retrieves all maintenance part consumptions for a maintenance",
@@ -176,3 +148,29 @@ async def delete_maintenance_part(maintenance_id: int, spare_part_id: int):
             detail=f"Error deleting maintenance part: {str(e)}"
         )
 
+@router.get(
+    path="/{maintenance_id}/{spare_part_id}",
+    summary="Get maintenance part by IDs",
+    description="Retrieves a maintenance part consumption by maintenance and spare part IDs",
+    response_model=MaintenancePartResponse
+)
+async def get_maintenance_part(maintenance_id: int, spare_part_id: int):
+    try:
+        service = MaintenancePartService()
+        item = await service.get_maintenance_part(maintenance_id, spare_part_id)
+
+        if not item:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Maintenance part with maintenance_id={maintenance_id} and spare_part_id={spare_part_id} not found"
+            )
+
+        return item
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error retrieving maintenance part: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error retrieving maintenance part: {str(e)}"
+        )

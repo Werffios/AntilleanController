@@ -101,7 +101,7 @@ class TrackerEventService:
             await self.mongo_manager.create_connection()
             collection = await self.mongo_manager.get_collection(self.collection_name)
 
-            cursor = collection.find({"TrackerId": tracker_id}).sort("EventTime", -1).skip(offset).limit(limit)
+            cursor = collection.find({"AssetName": tracker_id}).sort("EventTime", -1).skip(offset).limit(limit)
             events = await cursor.to_list(length=limit)
 
             # Convert ObjectId to string for response
