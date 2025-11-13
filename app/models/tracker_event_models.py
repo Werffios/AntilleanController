@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, Union, Dict, Any
 from datetime import datetime
 
 
@@ -28,7 +28,8 @@ class TrackerEventBase(BaseModel):
     Booking: Optional[str] = None
     Event: Optional[EventDetails] = None
     EventTime: Optional[datetime] = None
-    Heartbeat: Optional[str] = None
+    # Accept both legacy string heartbeat and new object heartbeat payloads
+    Heartbeat: Optional[Union[str, Dict[str, Any]]] = None
     Location: Optional[LocationDetails] = None
     ReceiveTime: Optional[datetime] = None
     ReportTime: Optional[datetime] = None
